@@ -1,0 +1,89 @@
+
+$ cat /etc/os-release
+$ lsb_release -a
+$ hostnamectl
+
+sudo apt update
+sudo apt -y upgrade
+$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+$ echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
+sudo apt update && sudo apt upgrade
+$ sudo apt install apt-transport-https uuid-runtime pwgen openjdk-8-jre-headless
+$ sudo apt update
+$ sudo apt install elasticsearch
+$ sudo systemctl enable elasticsearch.service
+$ sudo systemctl restart elasticsearch.service
+$ sudo systemctl status elasticsearch.service 
+recep.direk@datastore01:~$ sudo systemctl status elasticsearch.service
+● elasticsearch.service - Elasticsearch
+   Loaded: loaded (/usr/lib/systemd/system/elasticsearch.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2019-12-03 13:53:01 GMT; 6s ago
+     Docs: http://www.elastic.co
+  Process: 7968 ExecStartPre=/usr/share/elasticsearch/bin/elasticsearch-systemd-pre-exec (code=exited, status=0/SUCCESS)
+ Main PID: 7969 (java)
+    Tasks: 43 (limit: 4915)
+   CGroup: /system.slice/elasticsearch.service
+           └─7969 /usr/bin/java -Xms2g -Xmx2g -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSI
+Dec 03 13:53:01 datastore01 systemd[1]: Starting Elasticsearch...
+Dec 03 13:53:01 datastore01 systemd[1]: Started Elasticsearch.
+
+recep.direk@datastore01:~$ curl -X GET 'http://localhost:9200'
+{
+  "name" : "ptA0c9Y",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "MLGZwu5jQoum7JhRQAX-LQ",
+  "version" : {
+    "number" : "5.6.16",
+    "build_hash" : "3a740d1",
+    "build_date" : "2019-03-13T15:33:36.565Z",
+    "build_snapshot" : false,
+    "lucene_version" : "6.6.1"
+  },
+  "tagline" : "You Know, for Search"
+}
+
+
+
+
+Removing Elasticsearch :
+sudo apt-get --purge autoremove elasticsearch
+sudo rm -rf /var/lib/elasticsearch/
+sudo rm -rf /etc/elasticsearch
+
+To see the log of elasticsearch:
+sudo journalctl -u elasticsearch
+
+Installing elasticsearch with archive file: 
+
+
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.15.tar.gz
+tar xvfz elasticsearch-6.7.0.tar.gz
+./bin/elasticsearch -d -p pid
+
+curl -X GET 'http://localhost:9200'
+
+recep.direk@datastore01:~/elasticsearch-5.6.15$ curl -X GET 'http://localhost:9200'
+{
+  "name" : "S5An0RK",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "d1SILdz7T_qRukmyWxZmYg",
+  "version" : {
+    "number" : "5.6.15",
+    "build_hash" : "fe7575a",
+    "build_date" : "2019-02-13T16:21:45.880Z",
+    "build_snapshot" : false,
+    "lucene_version" : "6.6.1"
+  },
+  "tagline" : "You Know, for Search"
+}
+
+
+pkill -F pid
+
+Morphological Analysis Plugin for ElasticSearch installation
+
+cd /home/recep.direk/elasticsearch-5.6.15
+
+bin/elasticsearch-plugin install http://dl.bintray.com/content/imotov/elasticsearch-plugins/org/elasticsearch/elasticsearch-analysis-morphology/5.6.15/elasticsearch-analysis-morphology-5.6.15.zip
+
