@@ -1,0 +1,31 @@
+version: '2.2'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.2
+    container_name: elasticsearch
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 8200:9200
+    networks:
+      - elastic
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.8.2
+    ports:
+      - 5601:5601
+    networks:
+      - elastic
+volumes:
+  data01:
+    driver: local
+networks:
+  elastic:
+    driver: bridge
+    
+    
+    
+ 
