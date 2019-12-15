@@ -1,0 +1,124 @@
+   
+   docker-compose ps
+   docker container exec -it cc0a09537103 ls 
+   
+   docker-compose -f docker-compose.yml down
+   docker-compose -f docker-compose.yml up -d  
+   
+   
+   docker run -p 7300:9200 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.8.2
+   
+   
+   docker run -p 7300:9200 -v ./data:/data docker.elastic.co/elasticsearch/elasticsearch:6.8.2
+   
+   curl -XGET 'http://localhost:8200'
+   
+   docker stop containerID
+   
+   
+   
+   docker-compose -f docker-compose.yml down
+   
+   docker volume ls
+     
+   docker volume rm $(docker volume ls -q)
+   
+   
+   docker volume inspect docker-elasticsearch_data01
+   
+   curl -XGET 'http://localhost:8200'
+	
+
+============ elasticsearch and kibana on docker ========================
+version: '2.2'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.2
+    container_name: elasticsearch
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 8200:9200
+    networks:
+      - elastic
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.8.2
+    ports:
+      - 5601:5601
+    networks:
+      - elastic
+volumes:
+  data01:
+    driver: local
+networks:
+  elastic:
+    driver: bridge
+    
+	
+recep.direk@datastore01:~/docker-elasticsearch$ docker-compose -f docker-compose.yml up -d
+Creating network "docker-elasticsearch_elastic" with driver "bridge"
+Creating elasticsearch                 ... done                                                                                                          
+Creating docker-elasticsearch_kibana_1 ... done                                                                                                          
+recep.direk@datastore01:~/docker-elasticsearch$ docker-compose ps
+            Name                           Command               State                Ports
+---------------------------------------------------------------------------------------------------------
+docker-elasticsearch_kibana_1   /usr/local/bin/kibana-docker     Up      0.0.0.0:5601->5601/tcp
+elasticsearch                   /usr/local/bin/docker-entr ...   Up      0.0.0.0:8200->9200/tcp, 9300/tcp
+recep.direk@datastore01:~/docker-elasticsearch$
+
+recep.direk@datastore01:/$ curl -XGET 'http://localhost:8200'
+{
+  "name" : "N_Hsaog",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "RHX7nWmKRhqOj4xpAImeiA",
+  "version" : {
+    "number" : "6.8.2",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "b506955",
+    "build_date" : "2019-07-24T15:24:41.545295Z",
+    "build_snapshot" : false,
+    "lucene_version" : "7.7.0",
+    "minimum_wire_compatibility_version" : "5.6.0",
+    "minimum_index_compatibility_version" : "5.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+recep.direk@datastore01:/$
+
+
+recep.direk@datastore01:/$ docker volume inspect docker-elasticsearch_data01
+[
+    {
+        "CreatedAt": "2019-12-14T23:21:45Z",
+        "Driver": "local",
+        "Labels": {
+            "com.docker.compose.project": "docker-elasticsearch",
+            "com.docker.compose.version": "1.24.0",
+            "com.docker.compose.volume": "data01"
+        },
+        "Mountpoint": "/var/lib/docker/volumes/docker-elasticsearch_data01/_data",
+        "Name": "docker-elasticsearch_data01",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+recep.direk@datastore01:/$
+
+docker-compose logs kibana
+
+docker-compose logs elasticsearch
+
+
+
+    
+	
+	
+	
+
+
+   
